@@ -12,8 +12,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.ui.MyApplicationTheme
+import com.example.myapplication.ui.screens.HomeScreen2
+import com.example.myapplication.ui.themes.MyApplicationTheme
+import com.example.myapplication.ui.screens.HomeScreenCompacta
+import com.example.myapplication.ui.themes.MyApplicationTheme
 import com.example.myapplication.viewmodel.ProductoViewModel
 
 class MainActivity : ComponentActivity() {
@@ -45,5 +49,19 @@ fun PantallaPrincipal(viewModel: ProductoViewModel) {
         viewModel.listaProductos.forEach { producto ->
             Text(text = "• ${producto.nombre} - $${producto.precio}")
         }
+    }
+}
+
+@Preview(name = "Compact", widthDp = 360, heightDp = 800)
+@Composable
+fun Preview(){
+    HomeScreenCompacta()
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview(){
+    MyApplicationTheme() {
+        HomeScreen2()
     }
 }
