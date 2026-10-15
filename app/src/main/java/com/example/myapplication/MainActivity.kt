@@ -3,65 +3,29 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.myapplication.ui.screens.HomeScreen2
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.navigation.AppNavigation
 import com.example.myapplication.ui.themes.MyApplicationTheme
-import com.example.myapplication.ui.screens.HomeScreenCompacta
-import com.example.myapplication.ui.themes.MyApplicationTheme
-import com.example.myapplication.viewmodel.ProductoViewModel
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: ProductoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             MyApplicationTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PantallaPrincipal(viewModel)
+                    val navController = rememberNavController()
+                    AppNavigation(navController = navController)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun PantallaPrincipal(viewModel: ProductoViewModel) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Estructura Base MVVM Cargada",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        viewModel.listaProductos.forEach { producto ->
-            Text(text = "• ${producto.nombre} - $${producto.precio}")
-        }
-    }
-}
-
-@Preview(name = "Compact", widthDp = 360, heightDp = 800)
-@Composable
-fun Preview(){
-    HomeScreenCompacta()
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview(){
-    MyApplicationTheme() {
-        HomeScreen2()
     }
 }

@@ -1,9 +1,11 @@
 package com.example.myapplication.ui.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.example.myapplication.ui.utils.obtenerWindowSizeClass
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun HomeScreenAdaptive() {
 
@@ -21,6 +23,10 @@ fun HomeScreenAdaptive() {
 
         WindowWidthSizeClass.Expanded -> {
             HomeScreenExpanded()
+        }
+
+        else -> {
+            HomeScreenCompacta()
         }
     }
 }
