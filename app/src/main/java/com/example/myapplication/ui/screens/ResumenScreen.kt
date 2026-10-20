@@ -2,43 +2,35 @@ package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.myapplication.viewmodel.UsuarioViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.viewmodel.PropiedadesViewModel
 
 @Composable
-fun ResumenScreen(
-    usuarioViewModel: UsuarioViewModel
-) {
-    val estado by usuarioViewModel.estado.collectAsStateWithLifecycle()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(text = "Resumen del registro")
-
-        Text(text = "Nombre: ${estado.nombre}")
-        Text(text = "Correo: ${estado.correo}")
-        Text(text = "Clave: ${estado.clave}")
-        Text(text = "Dirección: ${estado.direccion}")
-
-        Text(
-            text = if (estado.aceptaTerminos) {
-                "Términos aceptados"
-            } else {
-                "Términos no aceptados"
-            }
-        )
+fun ResumenScreen(viewModel: PropiedadesViewModel = viewModel()) {
+    val propiedades by viewModel.propiedades.collectAsStateWithLifecycle(initialValue = emptyList())
+    val ultima = propiedades.firstOrNull()
+    Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text("Propiedad registrada", style = MaterialTheme.typography.headlineMedium)
+        if (ultima == null) {
+            Text("No hay una propiedad disponible para mostrar. Puedes revisar el listado completo en Propiedades.")
+        } else {
+            Text("Departamento ${ultima.numero}", style = MaterialTheme.typography.titleLarge)
+            Text("Piso: ${ultima.piso}")
+            Text("Superficie: ${ultima.metrosCuadrados} m²")
+            Text("Dormitorios: ${ultima.dormitorios} · Baños: ${ultima.banos}")
+            Text("Terraza: ${if (ultima.terraza) "Sí" else "No"}")
+            Text("Operación: ${ultima.tipoOperacion}")
+            Text("Estado: ${ultima.estado}")
+            Text("Precio: ${formatPesos(ultima.precio)}")
+            Text("Los datos quedaron guardados localmente en Room y estarán disponibles sin conexión.")
+        }
     }
 }

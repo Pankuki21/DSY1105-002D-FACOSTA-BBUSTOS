@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -42,26 +43,37 @@ android {
 }
 
 dependencies {
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.Lifecycle:lifecycle-viewmodel-compose:2.8.0-rc02")
-    implementation("androidx. Lifecycle:lifecycle-runtime-compose:2.6.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    implementation(platform(libs.androidx.compose.bom))
+
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform( dependencyProvider = Libs.androidx.compose.bom))
-    implementation(libs.androidx.vi)
-    implementation(libs.androidx.vi.graphics)
-    implementation(libs.androidx.vi.tooling.preview)
-    implementation(libs.androidx.material3)
-    //implementation(libs.androidx.navigation.runtime.android)
-    //implementation(libs.androidx.navigation.compose. jvmstubs)
-    implementation(libs.androidx.material3.window.size.class1.android)
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0-rc02")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
+    implementation("androidx.compose.material:material-icons-extended")
+
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
+
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform( dependencyProvider = libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.vi.test.junit4)
-    debugImplementation(libs.androidx.vi.tooling)
-    debugImplementation(libs.androidx.vi.test.manifest)
+    androidTestImplementation(libs.androidx.junit)
+
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

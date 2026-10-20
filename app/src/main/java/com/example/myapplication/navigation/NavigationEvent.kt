@@ -1,15 +1,14 @@
 package com.example.myapplication.navigation
 
-sealed class NavigationEvent{
-
+sealed class NavigationEvent {
     data class NavigateTo(
         val route: Screen,
         val popUpToRoute: Screen? = null,
         val inclusive: Boolean = false,
         val singleTop: Boolean = false
-    ): NavigationEvent()
+    ) : NavigationEvent()
 
-    object PopBackStack: NavigationEvent()
+    data object PopBackStack : NavigationEvent()
 
-    object NavigateUp: NavigationEvent()
+    data object NavigateUp : NavigationEvent()
 }

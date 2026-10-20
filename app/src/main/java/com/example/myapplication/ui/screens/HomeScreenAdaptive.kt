@@ -1,26 +1,31 @@
 package com.example.myapplication.ui.screens
 
-import androidx.compose.runtime.Composable
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import com.example.myapplication.ui.utils.obtenerWindowSizeClass
+import androidx.compose.runtime.Composable
 
 @Composable
-fun HomeScreenAdaptive() {
-
-    val windowSizeClass = obtenerWindowSizeClass()
-
-    when (windowSizeClass.widthSizeClass) {
+fun HomeScreenAdaptive(
+    widthSizeClass: WindowWidthSizeClass,
+    onRegistrarDepartamento: () -> Unit
+) {
+    when (widthSizeClass) {
 
         WindowWidthSizeClass.Compact -> {
-            HomeScreenCompacta()
+            HomeScreenCompacta(
+                onRegistrarDepartamento = onRegistrarDepartamento
+            )
         }
 
         WindowWidthSizeClass.Medium -> {
-            HomeScreenMediana()
+            HomeScreenMediana(
+                onRegistrarDepartamento = onRegistrarDepartamento
+            )
         }
 
         WindowWidthSizeClass.Expanded -> {
-            HomeScreenExpanded()
+            HomeScreenExpanded(
+                onRegistrarDepartamento = onRegistrarDepartamento
+            )
         }
     }
 }
