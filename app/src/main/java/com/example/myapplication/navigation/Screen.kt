@@ -1,26 +1,26 @@
 package com.example.myapplication.navigation
 
-sealed class Screen(val route: String) {
+sealed class Screen(
+    val route: String
+) {
 
-    data object Home : Screen(route = "home_page")
+    data object Home : Screen("home")
 
-    data object Profile : Screen(route = "profile_page")
+    data object RegistrarDepartamento :
+        Screen("registrar_departamento")
 
-    data object Settings : Screen(route = "settings_page")
+    data object RegistrarCliente : Screen("registrar_cliente")
 
-    data object Registro : Screen(route = "registro")
+    data object Propiedades : Screen("propiedades")
 
-    data object Resumen : Screen(route = "resumen")
+    data object Clientes : Screen("clientes")
 
-    data class Detail(
-        val itemId: String
-    ) : Screen(route = "detail_page/{itemId}") {
+    data object Resumen :
+        Screen("resumen")
 
-        fun buildRoute(): String {
-            return route.replace(
-                oldValue = "{itemId}",
-                newValue = itemId
-            )
-        }
-    }
+    data object Profile :
+        Screen("profile")
+
+    data object Settings :
+        Screen("settings")
 }

@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "My Application"
+rootProject.name = "DSY1105-002D-FACOSTA-BBUSTOS"
 include(":app")
- 

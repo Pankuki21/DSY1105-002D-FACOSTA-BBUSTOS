@@ -1,6 +1,7 @@
 package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,73 +20,53 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun HomeScreenExpanded() {
+fun HomeScreenExpanded(
+    onRegistrarDepartamento: () -> Unit
+) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
+            .padding(40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
 
+        Image(
+            painter = painterResource(id=R.drawable.logo),
+            contentDescription = "Logo de PropTrack",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp),
+            contentScale = ContentScale.Fit
+        )
+
         Text(
-            text = "Pantalla Expandida",
+            text = "Gestión inmobiliaria",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo App",
-                modifier = Modifier
-                    .weight(1f)
-                    .height(250.dp),
-                contentScale = ContentScale.Fit
-            )
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Button(
+                onClick = onRegistrarDepartamento,
+                modifier =  Modifier.weight(1f)
             ) {
+                Text("Registrar departamento")
+            }
 
-                Text(
-                    text = "¡Bienvenido!",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                Text(
-                    text = "Esta es la versión para pantallas grandes."
-                )
-
-                Button(
-                    onClick = { }
-                ) {
-                    Text(text = "Presióname")
-                }
+            Button(
+                onClick = {},
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Consultar propiedades")
             }
         }
     }
-}
-
-@Preview(
-    name = "Expandida",
-    showBackground = true,
-    widthDp = 1000,
-    heightDp = 800
-)
-@Composable
-fun HomeScreenExpandedPreview() {
-    HomeScreenExpanded()
 }

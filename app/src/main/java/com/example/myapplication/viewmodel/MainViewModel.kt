@@ -1,36 +1,43 @@
 package com.example.myapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.myapplication.navigation.NavigationEvent
 import com.example.myapplication.navigation.Screen
-import kotlinx.coroutines.flow.MutableSharedFLow
-import kotlinx.coroutines. flow.SharedFLow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainViewModel: ViewModel(){
+class MainViewModel : ViewModel() {
 
-    private val navigationEvent = MutableSharedFlow<NavigationEvent>()
+    private val _navigationEvents =
+        MutableSharedFlow<NavigationEvent>()
 
-    val navigationEvents: SharedFlow<NavigationEvent> = navigationEvents.asSharedFlow()
+    val navigationEvents: SharedFlow<NavigationEvent> =
+        _navigationEvents.asSharedFlow()
 
     fun navigateTo(screen: Screen) {
-        CoroutineScope(context = Dispatchers.Main).launch {
-            navigationEvents.emit(value = NavigationEvent.NavigateTo(route = screen))
+        viewModelScope.launch {
+            _navigationEvents.emit(
+                NavigationEvent.NavigateTo(route = screen)
+            )
         }
     }
 
     fun navigateBack() {
-        CoroutineScope(context = Dispatchers.Main).launch {
-            navigationEvents.emit(value = NavigationEvent.PopBackStack)
+        viewModelScope.launch {
+            _navigationEvents.emit(
+                NavigationEvent.PopBackStack
+            )
         }
     }
 
-    fun navigateup() {
-        CoroutineScope(context = Dispatchers.Main).launch {
-            navigationEvents.emit(value = NavigationEvent.NavigateUp)
+    fun navigateUp() {
+        viewModelScope.launch {
+            _navigationEvents.emit(
+                NavigationEvent.NavigateUp
+            )
         }
     }
 }
