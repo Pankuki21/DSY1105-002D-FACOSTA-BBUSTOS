@@ -37,7 +37,7 @@ fun HomeScreen(
 
     Column(modifier = contentModifier, verticalArrangement = Arrangement.spacedBy(18.dp)) {
         Image(
-            painter = painterResource(R.drawable.logo_proptrack_nuevo),
+            painter = painterResource(R.drawable.logo),
             contentDescription = "PropTrack",
             modifier = Modifier.fillMaxWidth().height(if (expanded) 160.dp else 120.dp),
             contentScale = ContentScale.Fit
