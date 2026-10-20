@@ -9,13 +9,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenCompacta() {
+fun HomeScreenCompacta(onRegistrarDepartamento: () -> Unit) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Mi App Kotlin") })
+            TopAppBar(title = { Text(text = "Gestión inmobiliaria") })
         }
     ) { innerPadding ->
         Column(
@@ -26,24 +27,36 @@ fun HomeScreenCompacta() {
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                text = "¡Bienvenido!",
+                text = "¡Bienvenida a PropTrack!",
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleLarge
             )
 
-            Button(onClick = { /* acción futura */ }) {
-                Text(text = "Presióname")
+            Button(onClick = onRegistrarDepartamento) {
+                Text(text = "Registrar propiedad")
             }
 
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo App",
+                contentDescription = "Logo de PropTrack",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp),
+                    .height(220.dp),
                 contentScale = ContentScale.Fit
             )
         }
     }
 }
 
+@Preview(
+    name = "Compacta",
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 800
+)
+@Composable
+fun HomeScreenCompactaPreview() {
+    HomeScreenCompacta(
+        onRegistrarDepartamento = {}
+    )
+}
