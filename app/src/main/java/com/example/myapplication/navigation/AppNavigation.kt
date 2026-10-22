@@ -37,11 +37,21 @@ import com.example.myapplication.ui.screens.RegistroClienteScreen
 import com.example.myapplication.ui.screens.RegistroDepartamentoScreen
 import com.example.myapplication.ui.screens.ResumenScreen
 import com.example.myapplication.ui.screens.SettingsScreen
+import com.example.myapplication.viewmodel.UsuarioViewModel
+import com.example.myapplication.ui.screens.RegistroIntegralScreen
+import com.example.myapplication.ui.screens.ResumenIntegralScreen
+import com.example.myapplication.repository.UsuarioRepository
+import com.example.myapplication.ui.screens.ListadoOfflineScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppNavigation(widthSizeClass: WindowWidthSizeClass) {
+fun AppNavigation(
+    widthSizeClass: WindowWidthSizeClass,
+    usuarioViewModel: UsuarioViewModel,
+    usuarioRepository: UsuarioRepository
+    )
+{
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -65,6 +75,7 @@ fun AppNavigation(widthSizeClass: WindowWidthSizeClass) {
                 DrawerLink("Clientes", currentRoute == Screen.Clientes.route, Icons.Default.Person) { navigate(Screen.Clientes) }
                 DrawerLink("Perfil", currentRoute == Screen.Profile.route, Icons.Default.Person) { navigate(Screen.Profile) }
                 DrawerLink("Configuración", currentRoute == Screen.Settings.route, Icons.Default.Settings) { navigate(Screen.Settings) }
+                DrawerLink(label = "Registro integral", selected = currentRoute == Screen.RegistroIntegral.route, icon = Icons.Default.Person) { navigate(Screen.RegistroIntegral) }
             }
         }
     ) {
@@ -108,6 +119,17 @@ fun AppNavigation(widthSizeClass: WindowWidthSizeClass) {
                 composable(Screen.Resumen.route) { ResumenScreen() }
                 composable(Screen.Profile.route) { ProfileScreen() }
                 composable(Screen.Settings.route) { SettingsScreen() }
+                composable(Screen.RegistroIntegral.route) { RegistroIntegralScreen(
+                        usuarioViewModel = usuarioViewModel,
+                        onRegistroExitoso = {
+                            navigate(Screen.ResumenIntegral)
+                        }) }
+                composable(Screen.ResumenIntegral.route) { ResumenIntegralScreen(
+                        usuarioViewModel = usuarioViewModel, onVerListado = {
+                            navigate(Screen.ListadoOffline)
+                        }) }
+                composable(Screen.ListadoOffline.route) { ListadoOfflineScreen(
+                        usuarioRepository = usuarioRepository) }
             }
         }
     }

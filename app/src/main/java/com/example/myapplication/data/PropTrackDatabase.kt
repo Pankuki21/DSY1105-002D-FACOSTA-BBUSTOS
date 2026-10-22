@@ -1,5 +1,8 @@
 package com.example.myapplication.data
 
+import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
@@ -88,19 +91,57 @@ interface ClienteDao {
     fun observarTodos(): Flow<List<ClienteEntity>>
 }
 
-@Database(entities = [EdificioEntity::class, DepartamentoEntity::class, ClienteEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [
+        EdificioEntity::class,
+        DepartamentoEntity::class,
+        ClienteEntity::class,
+        UsuarioEntity::class
+    ],
+    version = 2,
+    exportSchema = false)
+
+@TypeConverters(Converters::class)
 abstract class PropTrackDatabase : RoomDatabase() {
     abstract fun edificioDao(): EdificioDao
     abstract fun departamentoDao(): DepartamentoDao
     abstract fun clienteDao(): ClienteDao
 
-    companion object {
-        @Volatile private var INSTANCE: PropTrackDatabase? = null
+    abstract fun usuarioDao(): UsuarioDao
 
-        fun getDatabase(context: Context): PropTrackDatabase = INSTANCE ?: synchronized(this) {
-            INSTANCE ?: Room.databaseBuilder(context.applicationContext, PropTrackDatabase::class.java, "proptrack.db")
-                .build()
-                .also { INSTANCE = it }
+    companion object {
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                CREATE TABLE IF NOT EXISTS usuarios (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    nombre TEXT NOT NULL,
+                    correo TEXT NOT NULL,
+                    direccion TEXT NOT NULL,
+                    modoEspecial INTEGER NOT NULL,
+                    fotoPath TEXT,
+                    fechaRegistro INTEGER NOT NULL
+                )
+                """.trimIndent()
+                )
+            }
         }
+
+        @Volatile
+        private var INSTANCE: PropTrackDatabase? = null
+
+        fun getDatabase(context: Context): PropTrackDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    PropTrackDatabase::class.java,
+                    "proptrack.db"
+                )
+                    .addMigrations(MIGRATION_1_2)
+                    .build()
+                    .also { INSTANCE = it }
+            }
     }
 }

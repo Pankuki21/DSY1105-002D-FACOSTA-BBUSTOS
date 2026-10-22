@@ -74,8 +74,7 @@ fun ProfileScreen(
         )
 
         ImagenInteligente(
-            imagenUri = imagenPerfil,
-            tamano = 140.dp
+            fotoUri = null
         )
 
         Text(

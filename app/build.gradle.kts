@@ -61,12 +61,12 @@ dependencies {
 
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
 
+    implementation("io.coil-kt:coil-compose:2.7.0")
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
     implementation("androidx.compose.material:material-icons-extended")
-
     testImplementation(libs.junit)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
