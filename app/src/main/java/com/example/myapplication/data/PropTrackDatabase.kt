@@ -96,9 +96,10 @@ interface ClienteDao {
         EdificioEntity::class,
         DepartamentoEntity::class,
         ClienteEntity::class,
-        UsuarioEntity::class
+        UsuarioEntity::class,
+        CuentaEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false)
 
 @TypeConverters(Converters::class)
@@ -108,6 +109,7 @@ abstract class PropTrackDatabase : RoomDatabase() {
     abstract fun clienteDao(): ClienteDao
 
     abstract fun usuarioDao(): UsuarioDao
+    abstract fun cuentaDao(): CuentaDao
 
     companion object {
         private val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -129,6 +131,27 @@ abstract class PropTrackDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS cuentas (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        nombreUsuario TEXT NOT NULL,
+                        correo TEXT NOT NULL,
+                        claveHash TEXT NOT NULL,
+                        claveSalt TEXT NOT NULL,
+                        paisRegion TEXT NOT NULL,
+                        recibirNovedades INTEGER NOT NULL,
+                        fechaRegistro INTEGER NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_cuentas_correo ON cuentas(correo)")
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_cuentas_nombreUsuario ON cuentas(nombreUsuario)")
+            }
+        }
+
         @Volatile
         private var INSTANCE: PropTrackDatabase? = null
 
@@ -139,7 +162,7 @@ abstract class PropTrackDatabase : RoomDatabase() {
                     PropTrackDatabase::class.java,
                     "proptrack.db"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                     .also { INSTANCE = it }
             }

@@ -9,6 +9,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.data.PropTrackDatabase
 import com.example.myapplication.navigation.AppNavigation
 import com.example.myapplication.repository.UsuarioRepository
+import com.example.myapplication.repository.CuentaRepository
+import com.example.myapplication.repository.ProveedorOAuthRepository
 import com.example.myapplication.ui.themes.MyApplicationTheme
 import com.example.myapplication.viewmodel.UsuarioViewModel
 import com.example.myapplication.viewmodel.UsuarioViewModelFactory
@@ -18,6 +20,8 @@ import com.example.myapplication.data.EstadoDataStore
 class MainActivity : ComponentActivity() {
 
     private lateinit var usuarioRepository: UsuarioRepository
+    private lateinit var cuentaRepository: CuentaRepository
+    private lateinit var proveedorOAuthRepository: ProveedorOAuthRepository
     private lateinit var usuarioViewModelFactory: UsuarioViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +32,8 @@ class MainActivity : ComponentActivity() {
 
         // Crear el repositorio de usuarios.
         usuarioRepository = UsuarioRepository(database.usuarioDao())
+        cuentaRepository = CuentaRepository(database.cuentaDao())
+        proveedorOAuthRepository = ProveedorOAuthRepository(applicationContext)
 
         // Crear la fábrica del ViewModel.
         val estadoDataStore = EstadoDataStore(applicationContext)
@@ -49,7 +55,9 @@ class MainActivity : ComponentActivity() {
                 AppNavigation(
                     widthSizeClass = windowSizeClass.widthSizeClass,
                     usuarioViewModel = usuarioViewModel,
-                    usuarioRepository = usuarioRepository
+                    usuarioRepository = usuarioRepository,
+                    cuentaRepository = cuentaRepository,
+                    proveedorOAuthRepository = proveedorOAuthRepository
                 )
             }
         }

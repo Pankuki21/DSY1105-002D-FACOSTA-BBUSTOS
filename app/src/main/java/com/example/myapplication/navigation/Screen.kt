@@ -37,4 +37,13 @@ sealed class Screen(
 
     data object ListadoOffline :
         Screen("listado_offline")
+
+    data object ClientesPotenciales :
+        Screen("clientes_potenciales")
+
+    data object IniciarSesion :
+        Screen("iniciar_sesion")
+
+    data object CrearCuenta :
+        Screen("crear_cuenta")
 }

@@ -18,6 +18,7 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +27,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -42,6 +44,18 @@ import com.example.myapplication.ui.screens.RegistroIntegralScreen
 import com.example.myapplication.ui.screens.ResumenIntegralScreen
 import com.example.myapplication.repository.UsuarioRepository
 import com.example.myapplication.ui.screens.ListadoOfflineScreen
+import com.example.myapplication.ui.screens.ClientesPotencialesScreen
+import com.example.myapplication.repository.ClientesPotencialesRepository
+import com.example.myapplication.data.remote.ServicioRemoto
+import com.example.myapplication.viewmodel.ClientesPotencialesViewModel
+import com.example.myapplication.viewmodel.ClientesPotencialesViewModelFactory
+import com.example.myapplication.repository.CuentaRepository
+import com.example.myapplication.repository.ProveedorOAuthRepository
+import com.example.myapplication.viewmodel.CuentaAuthViewModel
+import com.example.myapplication.viewmodel.CuentaAuthViewModelFactory
+import com.example.myapplication.ui.screens.IniciarSesionScreen
+import com.example.myapplication.ui.screens.CrearCuentaScreen
+import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,10 +63,16 @@ import kotlinx.coroutines.launch
 fun AppNavigation(
     widthSizeClass: WindowWidthSizeClass,
     usuarioViewModel: UsuarioViewModel,
-    usuarioRepository: UsuarioRepository
+    usuarioRepository: UsuarioRepository,
+    cuentaRepository: CuentaRepository,
+    proveedorOAuthRepository: ProveedorOAuthRepository
     )
 {
     val navController = rememberNavController()
+    val cuentaAuthViewModel: CuentaAuthViewModel = viewModel(
+        factory = CuentaAuthViewModelFactory(cuentaRepository, proveedorOAuthRepository)
+    )
+    val estadoCuenta by cuentaAuthViewModel.estado.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val backStack by navController.currentBackStackEntryAsState()
@@ -76,6 +96,18 @@ fun AppNavigation(
                 DrawerLink("Perfil", currentRoute == Screen.Profile.route, Icons.Default.Person) { navigate(Screen.Profile) }
                 DrawerLink("Configuración", currentRoute == Screen.Settings.route, Icons.Default.Settings) { navigate(Screen.Settings) }
                 DrawerLink(label = "Registro integral", selected = currentRoute == Screen.RegistroIntegral.route, icon = Icons.Default.Person) { navigate(Screen.RegistroIntegral) }
+                DrawerLink(label = "Clientes potenciales", selected = currentRoute == Screen.ClientesPotenciales.route, icon = Icons.Default.Person) { navigate(Screen.ClientesPotenciales) }
+                DrawerLink(
+                    label = if (estadoCuenta.cuentaActiva == null) "Iniciar sesión" else "Cerrar sesión",
+                    selected = currentRoute == Screen.IniciarSesion.route,
+                    icon = Icons.Default.Person
+                ) {
+                    if (estadoCuenta.cuentaActiva != null) {
+                        cuentaAuthViewModel.cerrarSesion()
+                    }
+                    navigate(Screen.IniciarSesion)
+                }
+                DrawerLink("Crear cuenta", currentRoute == Screen.CrearCuenta.route, Icons.Default.Person) { navigate(Screen.CrearCuenta) }
             }
         }
     ) {
@@ -83,6 +115,23 @@ fun AppNavigation(
             topBar = {
                 TopAppBar(
                     title = { Text("PropTrack") },
+                    actions = {
+                        TextButton(
+                            onClick = {
+                                if (estadoCuenta.cuentaActiva != null) {
+                                    cuentaAuthViewModel.cerrarSesion()
+                                    navController.navigate(Screen.IniciarSesion.route) {
+                                        popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                                        launchSingleTop = true
+                                    }
+                                } else {
+                                    navigate(Screen.IniciarSesion)
+                                }
+                            }
+                        ) {
+                            Text(if (estadoCuenta.cuentaActiva == null) "Iniciar sesión" else "Cerrar sesión")
+                        }
+                    },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
@@ -130,6 +179,38 @@ fun AppNavigation(
                         }) }
                 composable(Screen.ListadoOffline.route) { ListadoOfflineScreen(
                         usuarioRepository = usuarioRepository) }
+                composable(Screen.ClientesPotenciales.route) {
+                    val clientesViewModel: ClientesPotencialesViewModel = viewModel(
+                        factory = ClientesPotencialesViewModelFactory(
+                            ClientesPotencialesRepository(ServicioRemoto.solicitudes)
+                        )
+                    )
+                    ClientesPotencialesScreen(viewModel = clientesViewModel)
+                }
+                composable(Screen.IniciarSesion.route) {
+                    IniciarSesionScreen(
+                        viewModel = cuentaAuthViewModel,
+                        onCrearCuenta = { navigate(Screen.CrearCuenta) },
+                        onInicioExitoso = {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+                composable(Screen.CrearCuenta.route) {
+                    CrearCuentaScreen(
+                        viewModel = cuentaAuthViewModel,
+                        onIniciarSesion = { navigate(Screen.IniciarSesion) },
+                        onInicioExitoso = {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
             }
         }
     }
